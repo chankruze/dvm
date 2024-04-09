@@ -1,14 +1,14 @@
-import { useState, useMemo, useCallback, useContext, useEffect } from "react";
-import { useRouter } from "next/router";
-import { useDropzone } from "react-dropzone";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 
 //INTRNAL IMPORT
-import { VotingContext } from "../context/Voter";
-import Style from "../styles/allowedVoter.module.css";
 import images from "../assets";
 import Button from "../components/Button/Button";
 import Input from "../components/Input/Input";
+import { VotingContext } from "../context/Voter";
+import Style from "../styles/allowedVoter.module.css";
 
 const candidateRegisration = () => {
   const [fileUrl, setFileUrl] = useState(null);
@@ -42,6 +42,7 @@ const candidateRegisration = () => {
   useEffect(() => {
     getNewCandidate();
   }, []);
+
   return (
     <div className={Style.createVoter}>
       <div>

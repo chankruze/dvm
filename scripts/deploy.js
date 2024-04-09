@@ -1,7 +1,7 @@
-const hre = require("hardhat");
+const hardhat = require("hardhat");
 
 async function main() {
-  const Create = await hre.ethers.getContractFactory("Create");
+  const Create = await hardhat.ethers.getContractFactory("Create");
   const create = await Create.deploy();
 
   await create.deployed();

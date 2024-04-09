@@ -1,12 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
-import Image from "next/image";
-import Countdown from "react-countdown";
+import React, { useContext, useEffect } from "react";
 
 //INTERNAL IMPORT
+import Card from "../components/card/card";
 import { VotingContext } from "../context/Voter";
 import Style from "../styles/index.module.css";
-import Card from "../components/card/card";
-import image from "../candidate.png";
 
 const index = () => {
   const {
@@ -42,11 +39,11 @@ const index = () => {
               </p>
             </div>
           </div>
-          <div className={Style.winner_message}>
+          {/* <div className={Style.winner_message}>
             <small>
               <Countdown date={Date.now() + 1000000000} />
             </small>
-          </div>
+          </div> */}
         </div>
       )}
 

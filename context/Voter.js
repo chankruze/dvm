@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react";
-import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { create as ipfsHttpClient } from "ipfs-http-client";
-import axios from "axios";
 import { useRouter } from "next/router";
+import React, { useState } from "react";
+import Web3Modal from "web3modal";
 
 //INTERNAL IMPORT
 import { VotingAddress, VotingAddressABI } from "./constants";
 
-const projectId = '2JsCiEisUHY1cqLDOcnj4qgnk23'
-const projectSecret = 'efa466ef72e3b7379d4f3f4ed519c880'
-const auth = 'Basic '+ Buffer.from(projectId + ":" + projectSecret).toString('base64');
+const projectId = "2JsCiEisUHY1cqLDOcnj4qgnk23";
+const projectSecret = "efa466ef72e3b7379d4f3f4ed519c880";
+const auth =
+  "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
 
 const client = ipfsHttpClient({
-  host:'ipfs.infura.io',
-  port:5001,
-  apiPath: '/api/v0',
-  protocol:'https',
-  headers:{
-    authorization: auth
-  }
+  host: "ipfs.infura.io",
+  port: 5001,
+  apiPath: "/api/v0",
+  protocol: "https",
+  headers: {
+    authorization: auth,
+  },
 });
 
 const fetchContract = (signerOrProvider) =>
@@ -32,15 +32,15 @@ export const VotingProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState("");
   const [candidateLength, setCandidateLength] = useState("");
   const pushCandidate = [];
-  const candidateIndex = [];
-  const [candidateArray, setCandidateArray] = useState(pushCandidate);
+  const candidateIndexArray = [];
+  const [candidateArray, setCandidateArray] = useState([]);
   // =========================================================
   //---ERROR Message
   const [error, setError] = useState("");
   const higestVote = [];
 
   const pushVoter = [];
-  const [voterArray, setVoterArray] = useState(pushVoter);
+  const [voterArray, setVoterArray] = useState([]);
   const [voterLength, setVoterLength] = useState("");
   const [voterAddress, setVoterAddress] = useState([]);
   ///CONNECTING METAMASK
@@ -112,6 +112,7 @@ export const VotingProvider = ({ children }) => {
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
     const contract = fetchContract(signer);
+    console.log({ contract });
 
     const data = JSON.stringify({ name, address, position, image: fileUrl });
     const added = await client.add(data);
@@ -211,17 +212,25 @@ export const VotingProvider = ({ children }) => {
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
+
+    console.log({ provider, signer });
+
     const contract = fetchContract(signer);
 
     //---------ALL CANDIDATE
-    const allCandidate = await contract.getCandidate();
+    const candidateAddresses = await contract.getCandidate();
+
+    console.log(candidateAddresses);
 
     //--------CANDIDATE DATA
-    allCandidate.map(async (el) => {
+    candidateAddresses.map(async (el) => {
       const singleCandidateData = await contract.getCandidateData(el);
 
-      pushCandidate.push(singleCandidateData);
-      candidateIndex.push(singleCandidateData[2].toNumber());
+      console.log(singleCandidateData);
+
+      // pushCandidate.push(singleCandidateData);
+      setCandidateArray((prev) => [...prev, singleCandidateData]);
+      candidateIndexArray.push(singleCandidateData[2].toNumber());
     });
 
     //---------CANDIDATE LENGTH
@@ -229,7 +238,7 @@ export const VotingProvider = ({ children }) => {
     setCandidateLength(allCandidateLength.toNumber());
   };
 
-  console.log(error);
+  console.log("TAG", error);
 
   return (
     <VotingContext.Provider
